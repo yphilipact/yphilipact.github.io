@@ -23,13 +23,7 @@
         function exportToPDF() {
             viz.showExportPDFDialog();
         }
-		function UserAction() {
-			var xhttp = new XMLHttpRequest();
-			xhttp.open("GET", "/api/2.8/sites/site/users/tguillevin/workbooks", true);
-			xhttp.setRequestHeader("Content-type", "application/json");
-			xhttp.send();
-			var response = JSON.parse(xhttp.responseText);
-}
+
     </script>
 </head>
 
@@ -38,6 +32,5 @@
     <button onclick="exportToPDF();">Export</button>
 </body>
 
-<button type="submit" onclick="UserAction()">Search</button>
 
 </html>
