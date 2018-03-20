@@ -1,35 +1,275 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
-    <title>Export to PDF</title>
+  <title>ActiveXperts Email Component Javascript Demo</title>
+  <link rel="Stylesheet" type="text/css" href="css/Layout.css" />
+  
+  <object codebase="https://www.activexperts.com/files/smtp-pop3-component/cab/4.0/AxEmail32.cab" 
+    classid="CLSID:1A129FBB-C9B4-43F7-8352-30CEF860AD8A" ></object>
+  <script language="JavaScript" type="text/javascript">
+    var objSmtp = new ActiveXObject("AxEmail.Smtp");
+    var objConstants = new ActiveXObject("AxEmail.Constants");
     
-    <script type="text/javascript" 
-        src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
-    <script type="text/javascript">
-        var viz;
-		<iframe src="https://tableau.actinvision.com/#/site/Training/views/Classeur1_0/Feuille1" 
-		width="800" height="600"></iframe>
-        function initViz() {
-            var containerDiv = document.getElementById("vizContainer"),
-                url = "https://tableau.actinvision.com/#/site/Training/views/Classeur1_0/Feuille1",
-                options = {
-                    hideTabs: true
-                };
+    var fso = new ActiveXObject("Scripting.FileSystemObject");
+    objSmtp.LogFile = fso.GetSpecialFolder(2) + "\\AxEmail.Smtp.log";
+    // Windows default: 'C:\Users\%USERNAME%\AppData\Local\Temp\AxEmail.Smtp.log'
+    
+    window.attachEvent("onload", PageLoaded, false);
+    
+    function PageLoaded() {
+      document.getElementById("APIinfo").innerHTML = "Build: " + objSmtp.Build + 
+                                                  "; Module: " + objSmtp.Module;
 
-            viz = new tableau.Viz(containerDiv, url, options); 
-            // Create a viz object and embed it in the container div.
-        }
+      var objForm = document.forms["SmtpSampleForm"];
+      objForm.txtResult.value = "n/a";
+      objForm.txtLogfile.value = fso.GetSpecialFolder(2) + "\\AxEmail.Smtp.log";
 
-        function exportToPDF() {
-            viz.showExportPDFDialog();
-        }
-    </script>
+      var OptionHighest = document.createElement('option');
+      var OptionHigh    = document.createElement('option');
+      var OptionNormal  = document.createElement('option');
+      var OptionLow     = document.createElement('option');
+      var OptionLowest  = document.createElement('option');
+
+      OptionHighest.text = "Highest Priority";
+      OptionHigh.text    = "High Priority";
+      OptionNormal.text  = "Normal Priority";
+      OptionLow.text     = "Low Priority";
+      OptionLowest.text  = "Lowest Priority";
+
+      OptionHighest.value = objConstants.EMAIL_MESSAGE_PRIORITY_HIGHEST;
+      OptionHigh.value    = objConstants.EMAIL_MESSAGE_PRIORITY_HIGH;
+      OptionNormal.value  = objConstants.EMAIL_MESSAGE_PRIORITY_MEDIUM;
+      OptionLow.value     = objConstants.EMAIL_MESSAGE_PRIORITY_LOW;
+      OptionLowest.value  = objConstants.EMAIL_MESSAGE_PRIORITY_LOWEST;
+
+      objForm.ddlPriority.add(OptionHighest);
+      objForm.ddlPriority.add(OptionHigh);
+      objForm.ddlPriority.add(OptionNormal);
+      objForm.ddlPriority.add(OptionLow);
+      objForm.ddlPriority.add(OptionLowest);
+      objForm.ddlPriority.value = objConstants.EMAIL_MESSAGE_PRIORITY_MEDIUM;
+    }
+    
+    function SendMessage() {
+      var objEmail = new ActiveXObject("AxEmail.Message");
+      var objForm = document.forms["SmtpSampleForm"];      
+
+      objEmail.FromName = objForm.txtFromName.value;
+      objEmail.FromAddress = objForm.txtFromAddress.value;
+      
+      if (objForm.txtToAddress.value != "")
+      {
+        objEmail.AddTo (objForm.txtToAddress.value,  objForm.txtToAddress.value);
+      }
+      
+      if (objForm.txtCcAddress.value != "" && objEmail.LastError == 0)
+      {
+        objEmail.AddCc (objForm.txtCcAddress.value,  objForm.txtCcAddress.value);
+      }
+      
+      if (objForm.txtBccAddress.value != "" && objEmail.LastError == 0)
+      {
+        objEmail.AddBcc(objForm.txtBccAddress.value, objForm.txtBccAddress.value);
+      }
+      
+      if (objEmail.LastError == 0)
+      {
+        objEmail.Subject  = objForm.txtSubject.value;
+        objEmail.Priority = objForm.ddlPriority.value;
+        objEmail.Encoding = objForm.ddlEncoding.value;
+        
+        objEmail.BodyPlainText  = objForm.txtPlainBody.value;
+        objEmail.BodyHtml       = objForm.txtHtmlBody.value;
+        
+        if (objForm.cbxSecure.checked == 1)
+        objSmtp.SetSecure(465); // 465 is the generic secure SMTP port
+      }
+      
+      if (objEmail.LastError == 0 && objSmtp.LastError == 0)
+      {
+        objSmtp.Connect(objForm.txtHost.value,objForm.txtAccount.value,objForm.txtPassword.value);
+      }
+      
+      if (objEmail.LastError == 0 && objSmtp.LastError == 0)
+      {
+        objSmtp.Send(objEmail);
+      }
+      
+      if (objEmail.LastError != 0)
+      {
+        objForm.txtResult.value = objEmail.LastError + ": " + 
+          objEmail.GetErrorDescription(objEmail.LastError);
+      }
+      else
+      {      
+        objForm.txtResult.value = objSmtp.LastError + ": " + 
+          objSmtp.GetErrorDescription(objSmtp.LastError);
+      }     
+
+      objSmtp.Disconnect();
+      
+    }    
+  
+  </script>
 </head>
-
-<body onload="initViz();">
-    <div id="vizContainer"></div>
-    <button onclick="exportToPDF();">Export</button>
+<body>
+  <div>
+    <div>
+      <div></div>
+      <div></div>
+    </div><!-- /header -->
+    <div>
+      | <a href="index.html">Home</a>     
+      | <a href="smtp.html">SMTP</a>
+      | <a href="pop3.html">POP3</a> |
+    </div><!-- /menu -->
+    <div>
+      <h1>Email Component Javascript SMTP Sample</h1>
+      <hr />
+      <p>
+        Simple Mail Transfer Protocol (SMTP) is an Internet standard for electronic mail (e-mail) 
+        transmission across Internet Protocol (IP) networks.
+        SMTP is specified for outgoing mail transport and uses TCP port 25 by default.
+      </p>
+      <form name="SmtpSampleForm" action="smtp.html" method="post">
+        <h2>Email Component:</h2>
+        <h3 id="APIinfo"></h3>
+        
+        <!-- Server, Secure -->   
+        <label for="Server">Mailserver:</label>
+        <p>
+          <input type="text" id="Server" name="txtHost" value="smtp.mycompany.com" />
+          
+          <input type="checkbox" id="Secure" name="cbxSecure" value="1" />
+          <label for="Secure">Secure</label>
+        </p>
+        
+        <!-- Account -->
+        <label for="Account">Account*:</label>
+        <p>
+          <input type="text" id="Account" name="txtAccount" />
+          *Only use when server requires authentication
+        </p>
+        
+        <!-- Password -->
+        <label for="Password">Password*:</label>
+        <p>
+          <input type="password" id="Password" name="txtPassword" />
+        </p>
+        
+        <!-- Empty row -->
+        <div></div> 
+        
+        <!-- Sender Name --> 
+        <label for="SenderName">Sender name:</label>
+        <p>
+          <input type="text" id="SenderName" name="txtFromName" />
+        </p>
+        
+        <!-- Sender Email --> 
+        <label for="SenderEmail">Sender e-mail:</label>
+        <p>
+          <input type="text" id="SenderEmail" name="txtFromAddress" />
+        </p>
+        
+        <!-- Empty row -->
+        <div></div>
+        
+        <!-- To -->
+        <label for="To">To:</label>
+        <p>
+          <input type="text" id="To" name="txtToAddress" value="john@mycompany.com" />          
+        </p>
+        
+        <!-- Cc -->
+        <label for="Cc">Cc:</label>
+        <p>
+          <input type="text" id="Cc" name="txtCcAddress" />
+        </p>
+        
+        <!-- Bcc -->
+        <label for="Bcc">Bcc:</label>
+        <p>
+          <input type="text" id="Bcc" name="txtBccAddress" />
+        </p>
+        
+        <!-- Empty row -->
+        <div></div>
+        
+        <!-- Subject -->
+        <label for="Subject">Subject:</label>
+        <p>
+          <input type="text" id="Subject" name="txtSubject" />
+        </p>
+        
+        <!-- PlainBody -->
+        <label for="PlainBody">Body:</label>  
+        <p>
+          <textarea id="PlainBody" name="txtPlainBody" style="height: 60px;"></textarea>
+        </p>
+        
+        <!-- HtmlBody -->
+        <label for="HtmlBody">Body HTML (optional):</label>  
+        <p>
+          <textarea id="HtmlBody" name="txtHtmlBody" style="height: 60px;"></textarea>
+        </p>
+        
+        <!-- Empty row -->
+        <div></div>
+        
+        <!-- Char. Set -->
+        <label for="CharSet">Char. Set:</label>
+        <p>
+          <select name="ddlEncoding">
+            <option value="0">Standard</option>
+            <option value="65001">UTF8</option>
+          </select>
+        </p>
+        
+        <!-- Priority -->
+        <label for="Priority">Priority:</label>
+        <p>
+          <select name="ddlPriority">
+          </select>
+        </p>
+        
+        <!-- SendButton -->
+        <div></div>
+        <p>
+          <input type="button" name="btnSendMessage" onclick="SendMessage()" 
+            value="Send Message" />
+        </p>
+        
+        <!-- Empty row -->
+        <div></div>
+        
+        <!-- Result -->
+        <label for="Result">Result:</label>
+        <p>
+          <input type="text" id="Result" name="txtResult" />
+        </p>
+        
+        <!-- Logfile -->
+        <label for="Logfile">Logfile:</label>
+        <p>
+          <input type="text" id="Logfile" name="txtLogfile" />
+        </p>
+      </form>
+      <p>
+        This demo uses the ActiveXperts Email Component, an ActiveXperts Software product.<br />
+         <a href="index.html">Back to main page</a>
+      </p>
+    </div><!-- /container -->
+    <div>
+      <div></div>
+      <p>
+        © 2011 <a href="http://activexperts.com" target="_blank">
+          Active<font color="#CCC000000">X</font>perts Software B.V.</a> 
+          All rights reserved.
+      </p>
+    </div><!-- /footer -->
+  </div><!-- /maincontainer -->
 </body>
-
 </html>
