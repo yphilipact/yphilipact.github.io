@@ -45,12 +45,12 @@ $("button2").click(function(e) {
 	    e.preventDefault();
 		$.ajax({
 			type: 'GET',
-			url: $("#result").attr(tableauURL+'/api/2.8/sites'+tableauSite+'/workbooks/');,
+		url: $("#result").attr(tableauURL+'/api/2.8/sites'+tableauSite+'/workbooks/')};,
 			success: function(result) {
 				var obj = jQuery.parseJSON(result);
 				$result.text(obj);
         }
-})};
+)};
 
 
 </script>
