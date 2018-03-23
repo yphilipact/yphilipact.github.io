@@ -36,14 +36,10 @@ $(document).on('submit','form.remember',function(){
 	    e.preventDefault();
 		$.ajax(settings).done(function (response) {
 		console.log(response);
-		var token =  json.tsResponse.credentials.$.token);
-		var siteId = json.tsResponse.credentials.site.$.id);
-		var userId = json.tsResponse.credentials.user.$.id);
+		var token =  json.tsResponse.credentials.$.token;
+		var siteId = json.tsResponse.credentials.site.$.id;
+		var userId = json.tsResponse.credentials.user.$.id;
 });});
-
-    var token =  json.tsResponse.credentials.$.token);
-    var siteId = json.tsResponse.credentials.site.$.id);
-    var userId = json.tsResponse.credentials.user.$.id);
 
 $("button2").click(function(e) {
 	    e.preventDefault();
