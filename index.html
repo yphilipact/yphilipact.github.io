@@ -12,6 +12,31 @@
   <input type="submit" value="Envoyer">
 </form> 
 </html>
+<script>
+var settings = {
+  "async": true,
+  "crossDomain": true,
+  "url": tableauURL,
+  "method": "GET",
+  "headers": {
+    "X-Tableau-Auth": "RVeMoGkrR-2npN4NstZ0YA|ryqZThnIDrC3BCpaWnPNDD0JxIOb6v4P",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Cache-Control": "no-cache",
+    "Postman-Token": "08586ffd-7338-4732-8253-19d0679dc1b6"
+  }
+    "data": "<tsRequest>\n  <credentials name=\tableauUser\ password=\TableauPassword\>\n      <site contentUrl=\tableauSite\ />\n      </credentials>\n</tsRequest>"
+}
+function loadResult(actionUrl, host) {
+    $.ajax({
+        type: 'GET',
+        url: actionUrl,
+        success: function(result) {
+            var obj = jQuery.parseJSON(result);
+            $("#myDiv").html(obj.content);
+        }
+    });
+</script>
 <?php
 /**
  * This example shows settings to use when sending via Google's Gmail servers.
