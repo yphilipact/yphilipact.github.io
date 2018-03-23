@@ -37,7 +37,7 @@ $("button").click(function(e) {
 			url: $("#result").attr('http://'+tableauURL+'/api/2.8/sites'+tableauSite+'/workbooks/');,
 			success: function(result) {
 				var obj = jQuery.parseJSON(result);
-				$("#myDiv").html(obj.content);
+				$result.text(obj);
         }
 })};
 
