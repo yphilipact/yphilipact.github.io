@@ -15,7 +15,7 @@
 <button><div> TEST </div>
 loadResult(tableauURL)
 </button> 
-</html>
+
 <script>
 var settings = {
   "async": true,
@@ -41,6 +41,7 @@ function loadResult(actionUrl, host) {
         }
     });
 </script>
+</html>
 <?php
 /**
  * This example shows settings to use when sending via Google's Gmail servers.
@@ -104,3 +105,4 @@ foreach ($result as $row) {
     $mail->clearAddresses();
     $mail->clearAttachments();
 }
+?>
