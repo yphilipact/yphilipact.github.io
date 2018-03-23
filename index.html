@@ -12,8 +12,9 @@
   <input type="submit" value="Envoyer">
 </form>
 
-  <button class="button" value="val_1" name="but1">Afficher la liste des classeurs</button>
-
+  <button class="button" name="but1">Afficher la liste des classeurs</button>
+  <button class="button2" name="but2">Authentification</button>
+  
 <body>
 <script> src="jquery.js"></script>
 <script>
@@ -31,7 +32,8 @@ var settings = {
   }
     "data": "<tsRequest>\n  <credentials name=\tableauUser\ password=\TableauPassword\>\n      <site contentUrl=\tableauSite\ />\n      </credentials>\n</tsRequest>"
 }
-$("button").click(function(e) {
+
+$("button2").click(function(e) {
 	    e.preventDefault();
 		$.ajax({
 			type: 'GET',
@@ -41,6 +43,12 @@ $("button").click(function(e) {
 				$result.text(obj);
         }
 })};
+
+$("button").click(function(e) {
+	    e.preventDefault();
+		$.ajax(settings).done(function (response) {
+		console.log(response);
+});)};
 
 </script>
 </body>
