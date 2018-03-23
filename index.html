@@ -12,8 +12,7 @@
   <input type="submit" value="Envoyer">
 </form>
 
-  <button class="button" name="but1">Afficher la liste des classeurs</button>
-  <button class="button2" name="but2">Authentification</button>
+  <button class="button2" name="but2">Afficher la liste des classeurs</button>
   
 <body>
 <script> src="jquery.js"></script>
@@ -33,6 +32,13 @@ var settings = {
     "data": "<tsRequest>\n  <credentials name=\tableauUser\ password=\TableauPassword\>\n      <site contentUrl=\tableauSite\ />\n      </credentials>\n</tsRequest>"
 }
 
+$(document).on('submit','form.remember',function(){
+	    e.preventDefault();
+		$.ajax(settings).done(function (response) {
+		console.log(response);
+});});
+
+
 $("button2").click(function(e) {
 	    e.preventDefault();
 		$.ajax({
@@ -44,11 +50,6 @@ $("button2").click(function(e) {
         }
 })};
 
-$("button").click(function(e) {
-	    e.preventDefault();
-		$.ajax(settings).done(function (response) {
-		console.log(response);
-});)};
 
 </script>
 </body>
