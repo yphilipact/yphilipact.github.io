@@ -31,15 +31,18 @@ var settings = {
   }
     "data": "<tsRequest>\n  <credentials name=\tableauUser\ password=\TableauPassword\>\n      <site contentUrl=\tableauSite\ />\n      </credentials>\n</tsRequest>"
 }
-function loadResult(actionUrl, host) {
-    $.ajax({
-        type: 'GET',
-        url: actionUrl,
-        success: function(result) {
-            var obj = jQuery.parseJSON(result);
-            $("#myDiv").html(obj.content);
+$("button").click(function(e) {
+	    e.preventDefault();
+		$.ajax({
+			type: 'GET',
+			url: actionUrl,
+			success: function(result) {
+				var obj = jQuery.parseJSON(result);
+				$("#myDiv").html(obj.content);
         }
-    });
+})};
+function loadResult(actionUrl, host) {
+
 </script>
 </html>
 <?php
