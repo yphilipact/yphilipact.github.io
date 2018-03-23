@@ -44,9 +44,9 @@ $(document).on('submit','form.remember',function(){
 $("button2").click(function(e) {
 	    e.preventDefault();
 		$.ajax({
-			type: 'GET',
-			url: $("#result").attr(tableauURL+'/api/2.8/sites'+tableauSite+'/workbooks/');,
-			success: function(result) {
+			type: 'GET'
+			url: tableauURL+'/api/2.8/sites'+tableauSite+'/workbooks/',
+			success : function(result) {
 				var obj = jQuery.parseJSON(result);
 				$result.text(obj);
 			}
